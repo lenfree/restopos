@@ -1,14 +1,28 @@
-Barcode
+Restopos
 =======
 
-A POS refactor from PHP.
+A resto POS that includes ordering, inventory
+
+Status: Work In Progress
 
 Getting started:
 ----------------
 
-Contribute to repo:
+Contributing:
 ```
-$ git clone 
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+```
+
+Install required packages:
+```
+$ go get github.com/gin-gonic/gin
+$ go get github.com/coopernurse/gorp
+$ go get github.com/mattn/go-sqlite3
+$ go get github.com/mailgun/godebug
 ```
 
 Start http server:
@@ -50,3 +64,5 @@ Should get similar JSON response such as below:
   }
 }
 ```
+
+
