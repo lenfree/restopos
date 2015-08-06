@@ -18,6 +18,7 @@ func main() {
 	router.GET("/foods", GetFoods)
 	router.POST("/foods", FoodPost)
 	router.DELETE("/foods/:name", FoodDelete)
+	router.GET("/foods/:name", FoodGet)
 
 	// Listen and server on 0.0.0.0:8080
 	router.Run(":8080")

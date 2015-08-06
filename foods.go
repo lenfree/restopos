@@ -108,3 +108,23 @@ func GetFood(name string) (Food, error) {
 	}
 	return food, nil
 }
+
+func FoodGet(c *gin.Context) {
+	name := c.Param("name")
+
+	foodItem, err := GetFood(name)
+
+	if err != nil {
+		content := gin.H{
+			"result": "No match found",
+		}
+		c.JSON(404, content)
+	} else {
+		content := gin.H{
+			"result": "Success",
+			"name":   foodItem.Name,
+			"price":  foodItem.Price,
+		}
+		c.JSON(404, content)
+	}
+}
