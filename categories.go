@@ -7,27 +7,26 @@ import (
 	"time"
 )
 
-func GetFoods(c *gin.Context) {
-	var foods []Food
-	_, err := dbmap.Select(&foods, "select * from foods order by food_id")
+func GetCategories(c *gin.Context) {
+	var categories []Category
+	_, err := dbmap.Select(&categories, "select * from categories order by category_id")
 	CheckErr(err, "Select failed")
 	content := gin.H{}
-	for k, v := range foods {
+	for k, v := range categories {
 		content[strconv.Itoa(k)] = v
 	}
 	c.JSON(200, content)
 }
 
-func FoodPost(c *gin.Context) {
-	var json Food
+func CategoryPost(c *gin.Context) {
+	var json Category
 
 	c.Bind(&json) // This will infer what binder to use depending on the content-type header.
-	food := CreateFood(json.Name, json.Price)
-	if food.Name == json.Name {
+	category := CreateCategory(json.Name)
+	if category.Name == json.Name {
 		content := gin.H{
 			"result": "Success",
-			"name":   food.Name,
-			"price":  food.Price,
+			"name":   category.Name,
 		}
 		c.JSON(201, content)
 	} else {
@@ -35,21 +34,20 @@ func FoodPost(c *gin.Context) {
 	}
 }
 
-func CreateFood(name string, price float32) Food {
-	food := Food{
+func CreateCategory(name string) Category {
+	category := Category{
 		Created: time.Now().UnixNano(),
 		Name:    name,
-		Price:   price,
 	}
-	err := dbmap.Insert(&food)
+	err := dbmap.Insert(&category)
 	CheckErr(err, "Insert failed")
-	return food
+	return category
 }
 
-func FoodDelete(c *gin.Context) {
+func CategoryDelete(c *gin.Context) {
 	name := c.Param("name")
 
-	count := DeleteFood(name)
+	count := DeleteCategory(name)
 	if count > 0 {
 		content := gin.H{
 			"result":      "Success",
@@ -58,41 +56,41 @@ func FoodDelete(c *gin.Context) {
 		c.JSON(200, content)
 	} else {
 		content := gin.H{
-			"result":     "There's no food named " + name + ".",
+			"result":     "No category named " + name + " found.",
 			"row delete": 0,
 		}
 		c.JSON(404, content)
 	}
 }
 
-func DeleteFood(name string) int64 {
-	foodItem, err := GetFood(name)
+func DeleteCategory(name string) int64 {
+	CategoryItem, err := GetCategory(name)
 	if err != nil {
 		count := 0
 		return int64(count)
 	}
 
-	count, err := dbmap.Delete(&foodItem)
+	count, err := dbmap.Delete(&CategoryItem)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return count
 }
 
-func GetFood(name string) (Food, error) {
-	var food Food
-	err := dbmap.SelectOne(&food, "select * from foods where Name=?", name)
+func GetCategory(name string) (Category, error) {
+	var category Category
+	err := dbmap.SelectOne(&category, "select * from categories where Name=?", name)
 	if err != nil {
-		return food, err
+		return category, err
 	}
-	return food, nil
+	return category, nil
 }
 
-func FoodGet(c *gin.Context) {
+func CategoryGet(c *gin.Context) {
 	name := c.Param("name")
 
-	foodItem, err := GetFood(name)
-
+	CategoryItem, err := GetCategory(name)
+	_ = "breakpoint"
 	if err != nil {
 		content := gin.H{
 			"result": "No match found",
@@ -101,8 +99,7 @@ func FoodGet(c *gin.Context) {
 	} else {
 		content := gin.H{
 			"result": "Success",
-			"name":   foodItem.Name,
-			"price":  foodItem.Price,
+			"name":   CategoryItem.Name,
 		}
 		c.JSON(200, content)
 	}
