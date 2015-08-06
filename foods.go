@@ -48,7 +48,7 @@ func FoodPost(c *gin.Context) {
 		content := gin.H{
 			"result": "Success",
 			"name":   food.Name,
-			"prie":   food.Price,
+			"price":  food.Price,
 		}
 		c.JSON(201, content)
 	} else {
@@ -62,8 +62,49 @@ func CreateFood(name string, price float32) Food {
 		Name:    name,
 		Price:   price,
 	}
-	_ = "breakpoint"
 	err := dbmap.Insert(&food)
 	checkErr(err, "Insert failed")
 	return food
+}
+
+func FoodDelete(c *gin.Context) {
+	name := c.Param("name")
+
+	count := DeleteFood(name)
+	if count > 0 {
+		content := gin.H{
+			"result":      "Success",
+			"row deleted": count,
+		}
+		c.JSON(200, content)
+	} else {
+		content := gin.H{
+			"result":     "There's no food named " + name + ".",
+			"row delete": 0,
+		}
+		c.JSON(404, content)
+	}
+}
+
+func DeleteFood(name string) int64 {
+	foodItem, err := GetFood(name)
+	if err != nil {
+		count := 0
+		return int64(count)
+	}
+
+	count, err := dbmap.Delete(&foodItem)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return count
+}
+
+func GetFood(name string) (Food, error) {
+	var food Food
+	err := dbmap.SelectOne(&food, "select * from foods where Name=?", name)
+	if err != nil {
+		return food, err
+	}
+	return food, nil
 }

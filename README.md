@@ -65,4 +65,12 @@ Should get similar JSON response such as below:
 }
 ```
 
+Delete specific entry:
+```
+$ curl -XPOST -H 'Content-Type: application/json' -d '{"name": "squid", "price": 100.00 }' localhost:8080/foods
+```
 
+Should expect below output:
+```
+ {"name":"squid","price":100,"result":"Success"}
+```
