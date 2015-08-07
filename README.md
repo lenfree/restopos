@@ -1,7 +1,8 @@
 Restopos
 =======
 
-A resto POS that includes ordering, inventory
+A resto POS that includes ordering, inventory.
+This is configured with Codeship to run tests.
 
 Status: Work In Progress
 
@@ -74,3 +75,4 @@ Should expect below output:
 ```
  {"name":"squid","price":100,"result":"Success"}
 ```
+
