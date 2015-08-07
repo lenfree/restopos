@@ -22,10 +22,11 @@ func FoodPost(c *gin.Context) {
 	var json Food
 
 	c.Bind(&json) // This will infer what binder to use depending on the content-type header.
-	food := CreateFood(json.Name, json.Price)
+	food := CreateFood(json.Name, json.Price, json.CategoryId)
 	if food.Name == json.Name {
 		content := gin.H{
 			"result": "Success",
+			"id":     food.Id,
 			"name":   food.Name,
 			"price":  food.Price,
 		}
@@ -35,12 +36,14 @@ func FoodPost(c *gin.Context) {
 	}
 }
 
-func CreateFood(name string, price float32) Food {
+func CreateFood(name string, price float32, categoryId int64) Food {
 	food := Food{
-		Created: time.Now().UnixNano(),
-		Name:    name,
-		Price:   price,
+		Created:    time.Now().UnixNano(),
+		Name:       name,
+		Price:      price,
+		CategoryId: categoryId,
 	}
+
 	err := dbmap.Insert(&food)
 	CheckErr(err, "Insert failed")
 	return food
@@ -106,4 +109,43 @@ func FoodGet(c *gin.Context) {
 		}
 		c.JSON(200, content)
 	}
+}
+
+func FoodPatch(c *gin.Context) {
+	name := c.Param("name")
+	var json Food
+
+	c.Bind(&json)
+	count := UpdateFood(name, json.Name, json.Price)
+	if count > 0 {
+		content := gin.H{
+			"result":      "Success",
+			"row updated": count,
+		}
+		c.JSON(200, content)
+	} else {
+		content := gin.H{
+			"result":      "No food named " + name + " found.",
+			"row updated": 0,
+		}
+		c.JSON(404, content)
+	}
+}
+
+func UpdateFood(currentName, newName string, newPrice float32) int64 {
+	foodItem, err := GetFood(currentName)
+	if err != nil {
+		count := 0
+		return int64(count)
+	}
+
+	foodItem.Name = newName
+	foodItem.Price = newPrice
+
+	count, err := dbmap.Update(&foodItem)
+	if err != nil {
+		count := 0
+		return int64(count)
+	}
+	return count
 }

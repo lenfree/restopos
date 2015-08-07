@@ -19,10 +19,12 @@ func main() {
 	router.POST("/foods", FoodPost)
 	router.DELETE("/foods/:name", FoodDelete)
 	router.GET("/foods/:name", FoodGet)
+	router.PATCH("/foods/:name", FoodPatch)
 	router.POST("/categories", CategoryPost)
 	router.GET("/categories", GetCategories)
 	router.GET("/categories/:name", CategoryGet)
 	router.DELETE("/categories/:name", CategoryDelete)
+	router.PATCH("/categories/:name", CategoryPatch)
 
 	// Listen and server on 0.0.0.0:8080
 	router.Run(":8080")

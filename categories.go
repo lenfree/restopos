@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"strconv"
-	"time"
 )
 
 func GetCategories(c *gin.Context) {
@@ -21,11 +20,12 @@ func GetCategories(c *gin.Context) {
 func CategoryPost(c *gin.Context) {
 	var json Category
 
-	c.Bind(&json) // This will infer what binder to use depending on the content-type header.
+	c.Bind(&json)
 	category := CreateCategory(json.Name)
 	if category.Name == json.Name {
 		content := gin.H{
 			"result": "Success",
+			"id":     category.Id,
 			"name":   category.Name,
 		}
 		c.JSON(201, content)
@@ -36,8 +36,7 @@ func CategoryPost(c *gin.Context) {
 
 func CreateCategory(name string) Category {
 	category := Category{
-		Created: time.Now().UnixNano(),
-		Name:    name,
+		Name: name,
 	}
 	err := dbmap.Insert(&category)
 	CheckErr(err, "Insert failed")
@@ -79,7 +78,7 @@ func DeleteCategory(name string) int64 {
 
 func GetCategory(name string) (Category, error) {
 	var category Category
-	err := dbmap.SelectOne(&category, "select * from categories where Name=?", name)
+	err := dbmap.SelectOne(&category, "select * from categories where Name=?", "ulam")
 	if err != nil {
 		return category, err
 	}
@@ -90,7 +89,6 @@ func CategoryGet(c *gin.Context) {
 	name := c.Param("name")
 
 	CategoryItem, err := GetCategory(name)
-	_ = "breakpoint"
 	if err != nil {
 		content := gin.H{
 			"result": "No match found",
@@ -103,4 +101,42 @@ func CategoryGet(c *gin.Context) {
 		}
 		c.JSON(200, content)
 	}
+}
+
+func CategoryPatch(c *gin.Context) {
+	name := c.Param("name")
+	var json Category
+
+	c.Bind(&json)
+	count := UpdateCategory(name, json.Name)
+	if count > 0 {
+		content := gin.H{
+			"result":      "Success",
+			"row updated": count,
+		}
+		c.JSON(200, content)
+	} else {
+		content := gin.H{
+			"result":      "No category named " + name + " found.",
+			"row updated": 0,
+		}
+		c.JSON(404, content)
+	}
+}
+
+func UpdateCategory(currentName, newName string) int64 {
+	CategoryItem, err := GetCategory(currentName)
+	if err != nil {
+		count := 0
+		return int64(count)
+	}
+
+	CategoryItem.Name = newName
+
+	count, err := dbmap.Update(&CategoryItem)
+	if err != nil {
+		count := 0
+		return int64(count)
+	}
+	return count
 }
