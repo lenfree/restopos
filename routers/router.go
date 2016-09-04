@@ -23,6 +23,11 @@ func init() {
                                 &controllers.StatusController{},
                         ),
                 ),
+                beego.NSNamespace("/category",
+                        beego.NSInclude(
+                                &controllers.CategoryController{},
+                        ),
+                ),
         )
         beego.AddNamespace(ns)
 }
