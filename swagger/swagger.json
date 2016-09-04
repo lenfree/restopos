@@ -268,35 +268,12 @@
             "title": "Category",
             "type": "object",
             "properties": {
-                "Id": {
+                "category_id": {
                     "type": "integer",
                     "format": "int64"
                 },
-                "Name": {
+                "category_name": {
                     "type": "string"
-                },
-                "Product": {
-                    "$ref": "#/definitions/Product"
-                }
-            }
-        },
-        "Product": {
-            "title": "Product",
-            "type": "object",
-            "properties": {
-                "Category": {
-                    "$ref": "#/definitions/Category"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "Name": {
-                    "type": "string"
-                },
-                "Price": {
-                    "type": "number",
-                    "format": "double"
                 }
             }
         },

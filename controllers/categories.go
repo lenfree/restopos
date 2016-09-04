@@ -40,7 +40,7 @@ func (c *CategoryController) Post() {
     json.Unmarshal(c.Ctx.Input.RequestBody, &category)
     result, err := models.AddCategory(category)
     if err != nil {
-        c.Abort("500")
+        c.Abort("400")
     } else {
         c.Data["json"] = result
     }
