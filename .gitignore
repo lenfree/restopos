@@ -1,3 +1,4 @@
 barcode
 *.swp
 lastupdate.tmp
+routers/commentsRouter*.go
