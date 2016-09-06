@@ -17,14 +17,11 @@ type CategoryController struct {
 // @Failure 500 Internal server error
 // @router / [get]
 func (c *CategoryController) Get() {
-    cid := c.GetString(":cid")
-    if cid != "" {
-        category, err := models.GetCategory(cid)
-        if err != nil {
-            c.Data["json"] = err.Error()
-        } else {
-            c.Data["json"] = category
-        }
+    category, err := models.GetCategory()
+    if err != nil {
+        c.Data["json"] = err.Error()
+    } else {
+        c.Data["json"] = category
     }
     c.ServeJSON()
 }

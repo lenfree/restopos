@@ -20,12 +20,12 @@ type Product struct {
         Category    *Category   `orm:"rel(one)"`
 }
 
-func AddCategory(c Category) (category Category, err error) {
+func AddCategory(c Category) (Category, error) {
     o := orm.NewOrm()
     valid := validation.Validation{}
     valid.Required(c.Name, "name")
     if valid.HasErrors() {
-        return category, errors.New("hshshshs")
+        return c, errors.New("Error")
     }
     id, err := o.Insert(&c)
     if err == nil {
@@ -36,6 +36,14 @@ func AddCategory(c Category) (category Category, err error) {
     return c, nil
 }
 
-func GetCategory(c string) (string, error) {
-    return "hello", nil
+func GetCategory() ([]Category, error) {
+    o := orm.NewOrm()
+    var categories []Category
+    qs := o.QueryTable("category")
+    num, err := qs.All(&categories)
+    if num > 0 {
+        fmt.Println(err)
+    }
+
+    return categories, nil
 }
