@@ -6,6 +6,7 @@ import (
     "github.com/astaxie/beego/validation"
     _ "github.com/mattn/go-sqlite3"
     "github.com/astaxie/beego/orm"
+    "strconv"
 )
 
 type Category struct {
@@ -14,10 +15,10 @@ type Category struct {
 }
 
 type Product struct {
-        ID          int `json:"product_id"`
-        Name        string `json:"product_name"`
-        Price       float64 `json:"product_price"`
-        Category    *Category   `orm:"rel(one)"`
+    ID          int `json:"product_id"`
+    Name        string `json:"product_name"`
+    Price       float64 `json:"product_price"`
+    Category    *Category   `orm:"rel(one)"`
 }
 
 func AddCategory(c Category) (Category, error) {
@@ -46,4 +47,17 @@ func GetCategory() ([]Category, error) {
     }
 
     return categories, nil
+}
+
+func GetCategoryByID(id string) (Category, error) {
+    uid, _ := strconv.Atoi(id)
+    category := Category{ID: uid}
+    o := orm.NewOrm()
+    err := o.Read(&category)
+    if err == orm.ErrNoRows {
+        fmt.Println(errors.New("not"))
+        return category, errors.New("404")
+    } else {
+        return category, nil
+    }
 }

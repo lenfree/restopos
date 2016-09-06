@@ -18,16 +18,13 @@
                 "tags": [
                     "category"
                 ],
-                "description": "Food Category",
-                "operationId": "CategoryController.Get",
+                "description": "get all Food Categories",
+                "operationId": "CategoryController.GetAll",
                 "responses": {
                     "200": {
                         "schema": {
                             "$ref": "#/definitions/Category"
                         }
-                    },
-                    "500": {
-                        "description": "Internal server error"
                     }
                 }
             },
@@ -44,7 +41,7 @@
                         "description": "body for category content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "$ref": "#/definitions/Category"
                         }
                     }
                 ],
@@ -54,6 +51,32 @@
                     },
                     "403": {
                         "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/category/{uid}": {
+            "get": {
+                "tags": [
+                    "category"
+                ],
+                "description": "get food category by id",
+                "operationId": "CategoryController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The uid of food category",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Category.Name"
+                    },
+                    "403": {
+                        "description": "uid is empty"
                     }
                 }
             }
